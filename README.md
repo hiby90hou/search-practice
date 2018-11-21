@@ -1,7 +1,7 @@
 # Search-practice
 ## A simple search function
 
-1. Requirement analysis
+### Requirement analysis
 
 Using the provided data (tickets.json and users.json and organization.json) => there are 3 json files, and they must have some relationship between each other.
 
@@ -27,7 +27,7 @@ Performance - should gracefully handle a significant increase in amount of data 
 
 Robustness - should handle and report errors. => Ruby exceptions handler
 
-2. The relationship between 3 json files
+### The relationship between 3 json files
 
 a. Organization do not belong to any other files
 
@@ -35,7 +35,7 @@ b. User belongs to Organizations
 
 c. Tickets has submitter_id(user 1) and assignee_id(user 2), it also belongs to Organizations
 
-3. My plan
+### My plan
 
 a. Create a function to let user to input a keyword to the CLI
 
