@@ -41,8 +41,74 @@ a. Create a function to let user to input a keyword to the CLI
 
 b. ~~Create a function to read json file line by line and output each element to ruby object, if file is too big, stop at the middle of the reading processes and wait for the data digest~~ First step: read json file and change it to a big hash
 
-c. Create a function to match if a hash contain keywords & id(in an array) / has empty value
+c. Create a function to match if a hash contain keywords & id (in an array)
 
-d. Create a function to first search Organization hash, then use the results to search Users hash, then use the results to search tickets hash, and store result to an array
+d. Create a function to match if a hash has empty value (need to input a template and base on this template to check)
 
-e. Create a function to output the array to the screen
+e. Create a function to first search Organization hash, then use the results to search Users hash, then use the results to search tickets hash, and store result to an array
+
+f. Create a function to output the array to the screen
+
+### template
+
+Organization
+```
+{
+  "_id": number,
+  "url": string,
+  "external_id": string",
+  "name": string,
+  "domain_names": Array<string>,
+  "created_at": Date,
+  "details": string,
+  "shared_tickets": boolean,
+  "tags": Array<string>
+}
+```
+
+Users
+```
+{
+  "_id": number,
+  "url": string,
+  "external_id": string,
+  "name": string,
+  "alias": string,
+  "created_at": Date,
+  "active": boolean,
+  "verified": boolean,
+  "shared": boolean,
+  "locale": string,
+  "timezone": string,
+  "last_login_at": Date,
+  "email": string,
+  "phone": string,
+  "signature": string,
+  "organization_id": number,
+  "tags": Array<string>,
+  "suspended": boolean,
+  "role": string
+}
+```
+
+Tickets
+```
+{
+  "_id": string,
+  "url": string,
+  "external_id": string,
+  "created_at": Date,
+  "type": string,
+  "subject": string,
+  "description": string,
+  "priority": string,
+  "status": string,
+  "submitter_id": number,
+  "assignee_id": number,
+  "organization_id": number,
+  "tags": Array<string>,
+  "has_incidents": boolean,
+  "due_at": Date,
+  "via": string
+}
+```
