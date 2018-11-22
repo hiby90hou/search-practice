@@ -37,7 +37,7 @@ class SearchInterface
 	end
 
 	def show_result()
-		@display_table.showOrganizationTable(@results[:organizationSearchResults])
+		@display_table.show_organization_table(@results[:organizationSearchResults])
 	end
 end
 
@@ -89,48 +89,56 @@ class FormElement
 end
 
 class DisplayTable
-	def showOrganizationTable(organizations)
-		puts organizations
+	def show_organization_table(organizations)
+		# puts organizations
 		row = []
 		table = Terminal::Table.new do |t|
 			t << ['name','domain name','create at','details','shared tickets','tags']
 			organizations.each do |organization|
-				domain_names = ""
-				tags = ""
 
-				organization['domain_names'].each do |domain_name|
-					if domain_names.length == 0
-						domain_names = domain_name
-					else
-						domain_names = domain_names + ', ' + domain_name
-					end
-				end
-
-				organization['tags'].each do |tag|
-					if tags.length == 0
-						tags = tag
-					else
-						tags = tags + ', ' + tag
-					end
-				end
-
-				create_date = Date.parse(organization['created_at'])
-				
-				if organization['shared_tickets'] == true
-					is_shared_tickets = 'yes'
-				else
-					is_shared_tickets = 'no'
-				end
+				domain_names = array_to_string(organization['domain_names'])
+				tags = array_to_string(organization['tags'])
+				create_date = string_to_date(organization['created_at'])
+				is_shared_tickets = boolean_to_answer(organization['shared_tickets'])
 
 				t.add_row [organization['name'],domain_names,create_date,organization['details'],is_shared_tickets,tags]
+	
 			end
 		end
+	
 		puts table
+	
 	end
 
-	def showUserTable(users)
+	def show_user_table(users)
 		row = []
 		row.push(['id','url','name','domain name','create at','details','shared tickets','tags'])
+	end
+
+	def array_to_string(input_arr)
+		new_string = ''
+		input_arr.each do |element|
+			if new_string.length == 0
+				new_string = element
+			else
+				new_string = new_string + ', ' + element
+			end
+		end
+		return new_string
+	end
+
+	def string_to_date(input_str)
+		return Date.parse(input_str)
+	end
+
+	def boolean_to_answer(input_boolean)
+		answer = ''
+		if input_boolean == true
+			answer = 'yes'
+		else
+			answer = 'no'
+		end
+		return answer
 	end
 end
 # interface = SearchInterface.new('../resources/organizations.json','../resources/users.json','../resources/tickets.json')
