@@ -1,5 +1,6 @@
 require 'json'
 require 'terminal-table'
+require 'date'
 
 class SearchInterface
 	def initialize(organization_file_address, user_file_address, ticket_file_address)
@@ -101,7 +102,7 @@ class DisplayTable
 					if domain_names.length == 0
 						domain_names = domain_name
 					else
-						domain_names = domain_names + '\n' + domain_name
+						domain_names = domain_names + ', ' + domain_name
 					end
 				end
 
@@ -109,13 +110,19 @@ class DisplayTable
 					if tags.length == 0
 						tags = tag
 					else
-						tags = tags + '\n' + tag
+						tags = tags + ', ' + tag
 					end
 				end
 
-				puts organization
-				create_date = organization['created_at']
-				t.add_row [organization['name'],domain_names,create_date,organization['details'],organization['shared_tickets'],tags]
+				create_date = Date.parse(organization['created_at'])
+				
+				if organization['shared_tickets'] == true
+					is_shared_tickets = 'yes'
+				else
+					is_shared_tickets = 'no'
+				end
+
+				t.add_row [organization['name'],domain_names,create_date,organization['details'],is_shared_tickets,tags]
 			end
 		end
 		puts table
