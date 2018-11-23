@@ -1,6 +1,7 @@
 require 'json'
 require 'terminal-table'
 require 'date'
+require 'pry'
 
 class SearchInterface
   def initialize(organization_file_address, user_file_address, ticket_file_address)
@@ -113,19 +114,44 @@ class FormElement
   end
 
   def find_value_in_nested_hash(data, desired_value)
-    data.values.each do |value|
-      case value
+    if desired_value == ""
+      return find_blank_in_nested_hash(data)
+    else
+      data.values.each do |value|
+        case value
 
-      when desired_value
+        when desired_value
+          return true
+
+        when Hash
+          f = find_value_in_nested_hash(value, desired_value)
+          return f if f
+
+        when Array
+          new_hash = Hash[value.map.with_index {|x,i| [i, x]}]
+          f = find_value_in_nested_hash(new_hash, desired_value)
+          return f if f
+        end
+      end
+    end
+
+    return nil
+  end
+
+  def find_blank_in_nested_hash(data)
+  	
+    data.values.each do |value|
+    # binding.pry
+      if value === ''
         return true
 
-      when Hash
-        f = find_value_in_nested_hash(value, desired_value)
+      elsif value === Hash
+        f = find_blank_in_nested_hash(value)
         return f if f
 
-      when Array
-        new_hash =Hash[value.map.with_index {|x,i| [i, x]}]
-        f = find_value_in_nested_hash(new_hash, desired_value)
+      elsif value === Array
+        new_hash = Hash[value.map.with_index {|x,i| [i, x]}]
+        f = find_blank_in_nested_hash(new_hash)
         return f if f
       end
     end
@@ -197,7 +223,7 @@ class DisplayTable
         t.add_row [ticket['subject'],create_date,ticket['type'],ticket['description'],ticket['priority'],ticket['status'],ticket['submitter_name'],ticket['assignee_name'],ticket['organization_name'],tags,is_has_incidents,due_date,ticket['via']]
       end
     end
-    
+
     puts table
   end
 
