@@ -23,21 +23,32 @@ class SearchInterface
 	end
 
 	def search(keyword)
-		organizationSearchResults = @organizations.find_keyword(keyword)
+		organization_search_results = @organizations.find_keyword(keyword)
 
-		usersSearchResults = @users.find_keyword(keyword)
+		users_search_results = @users.find_keyword(keyword)
 
-		ticketsSearchResults = @tickets.find_keyword(keyword)
+		# find organization name for user
+		users_search_results.map! do |user|
+			organization_name = @organizations.find_name_by_id(user['organization_id'])
+			user['organization_name'] = organization_name
+			user
+		end
+
+		puts users_search_results
+
+		tickets_search_results = @tickets.find_keyword(keyword)
 
 		@results = {
-			"organizationSearchResults": organizationSearchResults,
-			"usersSearchResults": usersSearchResults,
-			"ticketsSearchResults": ticketsSearchResults
+			"organizationSearchResults": organization_search_results,
+			"usersSearchResults": users_search_results,
+			"ticketsSearchResults": tickets_search_results
 		}
 	end
 
 	def show_result()
 		@display_table.show_organization_table(@results[:organizationSearchResults])
+		@display_table.show_user_table(@results[:usersSearchResults])
+		@display_table.show_ticket_table(@results[:ticketsSearchResults])
 	end
 end
 
@@ -86,12 +97,22 @@ class FormElement
 	  end
 	  nil
 	end
+
+	def find_name_by_id(input_id)
+		result = ''
+		@data_hash.each do |element|
+			if element['_id'] == input_id
+				result = element['name']
+			end
+		end
+
+		return result
+	end
 end
 
 class DisplayTable
 	def show_organization_table(organizations)
 		# puts organizations
-		row = []
 		table = Terminal::Table.new do |t|
 			t << ['name','domain name','create at','details','shared tickets','tags']
 			organizations.each do |organization|
@@ -102,17 +123,32 @@ class DisplayTable
 				is_shared_tickets = boolean_to_answer(organization['shared_tickets'])
 
 				t.add_row [organization['name'],domain_names,create_date,organization['details'],is_shared_tickets,tags]
-	
 			end
 		end
-	
 		puts table
-	
 	end
 
 	def show_user_table(users)
-		row = []
-		row.push(['id','url','name','domain name','create at','details','shared tickets','tags'])
+		# puts users
+		table = Terminal::Table.new do |t|
+			t << ['name','alias','create date','active','verified','shared','locale','email','phone','signature','organization','tags','suspended','role']
+			users.each do |user|
+
+				tags = array_to_string(user['tags'])
+				create_date = string_to_date(user['created_at'])
+				is_actived = boolean_to_answer(user['actived'])
+				is_verified = boolean_to_answer(user['verified'])
+				is_shared = boolean_to_answer(user['shared'])
+				is_suspended = boolean_to_answer(user['suspended'])
+
+				t.add_row [user['name'],user['alias'],create_date,is_actived,is_verified,is_shared,user['locale'],user['email'],user['phone'],user['signature'],user['organization_name'],tags,is_suspended,user['role']]
+			end
+		end	
+		puts table
+	end
+
+	def show_ticket_table(tickets)
+		# puts tickets
 	end
 
 	def array_to_string(input_arr)
