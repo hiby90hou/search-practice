@@ -23,20 +23,38 @@ class SearchInterface
 	end
 
 	def search(keyword)
+		if is_keyword_a_number(keyword)
+			keyword = keyword.to_i
+		end
+
 		organization_search_results = @organizations.find_keyword(keyword)
 
 		users_search_results = @users.find_keyword(keyword)
 
 		# find organization name for user
 		users_search_results.map! do |user|
-			organization_name = @organizations.find_name_by_id(user['organization_id'])
+			organization_name = @organizations.find_element_by_id(user['organization_id'])['name']
+			
 			user['organization_name'] = organization_name
+			
 			user
 		end
 
-		puts users_search_results
-
+		# puts users_search_results
 		tickets_search_results = @tickets.find_keyword(keyword)
+
+		# find organization name, submitter name, assignee name for ticket
+		tickets_search_results.map! do |ticket|
+			organization_name = @organizations.find_element_by_id(ticket['organization_id'])['name']
+			submitter_name = @users.find_element_by_id(ticket['submitter_id'])['name']
+			assignee_name = @users.find_element_by_id(ticket['assignee_id'])['name']
+			
+			ticket['organization_name'] = organization_name
+			ticket['submitter_name'] = submitter_name
+			ticket['assignee_name'] = assignee_name
+			
+			ticket
+		end
 
 		@results = {
 			"organizationSearchResults": organization_search_results,
@@ -46,9 +64,24 @@ class SearchInterface
 	end
 
 	def show_result()
-		@display_table.show_organization_table(@results[:organizationSearchResults])
-		@display_table.show_user_table(@results[:usersSearchResults])
-		@display_table.show_ticket_table(@results[:ticketsSearchResults])
+		puts 'search results:'
+		if @results[:organizationSearchResults].length > 0
+			puts 'organizations:'
+			@display_table.show_organization_table(@results[:organizationSearchResults])
+		end
+
+		if @results[:usersSearchResults].length > 0
+			puts 'users:'
+			@display_table.show_user_table(@results[:usersSearchResults])
+		end
+		if @results[:ticketsSearchResults].length > 0
+			puts 'tickets:'
+			@display_table.show_ticket_table(@results[:ticketsSearchResults])
+		end
+	end
+
+	def is_keyword_a_number(keyword)
+		keyword =~/^\d+$/?true:false
 	end
 end
 
@@ -98,14 +131,13 @@ class FormElement
 	  nil
 	end
 
-	def find_name_by_id(input_id)
+	def find_element_by_id(input_id)
 		result = ''
 		@data_hash.each do |element|
 			if element['_id'] == input_id
-				result = element['name']
+				result = element
 			end
 		end
-
 		return result
 	end
 end
@@ -149,6 +181,19 @@ class DisplayTable
 
 	def show_ticket_table(tickets)
 		# puts tickets
+		table = Terminal::Table.new do |t|
+			t << ['subject','created_at','type','description','priority','status','submitter name','assignee name','organization name','tags','has_incidents','due_at','via']
+			tickets.each do |ticket|
+
+				tags = array_to_string(ticket['tags'])
+				create_date = string_to_date(ticket['created_at'])
+				due_date = string_to_date(ticket['due_at'])
+				is_has_incidents = boolean_to_answer(ticket['has_incidents'])
+
+				t.add_row [ticket['subject'],create_date,ticket['type'],ticket['description'],ticket['priority'],ticket['status'],ticket['submitter_name'],ticket['assignee_name'],ticket['organization_name'],tags,is_has_incidents,due_date,ticket['via']]
+			end
+		end	
+		puts table
 	end
 
 	def array_to_string(input_arr)
@@ -164,7 +209,11 @@ class DisplayTable
 	end
 
 	def string_to_date(input_str)
-		return Date.parse(input_str)
+		if input_str
+			return Date.parse(input_str)
+		else
+			return 'Unknow'
+		end
 	end
 
 	def boolean_to_answer(input_boolean)
@@ -177,4 +226,26 @@ class DisplayTable
 		return answer
 	end
 end
-# interface = SearchInterface.new('../resources/organizations.json','../resources/users.json','../resources/tickets.json')
+
+interface = SearchInterface.new('../resources/organizations.json','../resources/users.json','../resources/tickets.json')
+
+close_interface = false
+
+while !close_interface
+	puts "Please typing in your search keyword:"
+
+	keyword = gets.chomp
+
+	puts keyword
+	interface.search(keyword)
+	interface.show_result()
+
+	puts "Do you want to continue your search? y/n"
+
+	is_continue = gets.chomp
+
+	if is_continue == 'n'
+		puts "exit"
+		close_interface = true
+	end
+end
