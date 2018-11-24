@@ -84,7 +84,7 @@ e. Create a function to first search Organization hash, then use the results to 
 
 f. Create a function to output the array to the screen.
 
-### template
+### Template
 
 Organization
 ```
