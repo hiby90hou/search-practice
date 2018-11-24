@@ -148,9 +148,13 @@ Tickets
 }
 ```
 ### What I achieved
+
 a. A search function that include empty '' search.
+
 b. The search results shown in 3 tables.
+
 c. The data in table is ready for normal people to use (with out the country code part).
+
 d. Limited testing, I am not good at testing, but I want to learn it and I learned how to use minitest in this project.
 
 ### What I need to do
