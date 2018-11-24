@@ -1,36 +1,37 @@
 # Search-practice
 
 ## A simple search function
+This search function is base on ruby, and able to handle organizations data, users data and tickets data in 3 different json files.
 
 ### The technology that I used in this project
 
-1. ruby -> a backend language
+a. ruby -> a backend language
 
-2. terminal-table (gem) -> a gem to make good table layout in terminal
+b. terminal-table (gem) -> a gem to make good table layout in terminal
 
-3. minitest(gem) -> a ruby testing tool
+c. minitest(gem) -> a ruby testing tool
 
 ### How to use
-1. Install ruby
+a. Install ruby
 
 
-2. Clone project
+b. Clone project
 ```
 git clone https://github.com/hiby90hou/search-practice.git
 ```
 
-3. Install gems
+c. Install gems
 ```
 bundle install
 ```
 
-4. Run ruby project
+d. Run ruby project
 ```
 cd lib
 ruby ./search_cli.rb
 ```
 
-5. Run testing
+e. Run testing
 ```
 ruby ./search_cli_test.rb
 ```
@@ -39,49 +40,49 @@ ruby ./search_cli_test.rb
 
 Using the provided data (tickets.json and users.json and organization.json) => there are 3 json files, and they must have some relationship between each other.
 
-write a simple command line application => write a CLI, so no GUI requirement
+write a simple command line application => write a CLI, so no GUI requirement:cry:.
 
-to search the data and return the results in a human readable format. => Json to a table view
+to search the data and return the results in a human readable format. => Json to a table view.
 
-Feel free to use libraries or roll your own code as you see fit. => ruby has gems
+Feel free to use libraries or roll your own code as you see fit. => ruby has gems.
 
-Where the data exists, values from any related entities should be included in the results. => I need to search any related data from 3 json files
+Where the data exists, values from any related entities should be included in the results. => I need to search any related data from 3 json files.
 
-The user should be able to search on any field, full value matching is fine (e.g. “mar” won’t return “mary”). => find value equal to keyword
+The user should be able to search on any field, full value matching is fine (e.g. “mar” won’t return “mary”). => find value equal to keyword.
 
-The user should also be able to search for empty values, e.g. where description is empty. => value can be empty
+The user should also be able to search for empty values, e.g. where description is empty. => value can be empty.
 
-Extensibility - separation of concerns. => I will use functional programming
+Extensibility - separation of concerns. => I will use functional programming.
 
-Simplicity - aim for the simplest solution that gets the job done whilst remaining => write simple code, do not put every thing in a function
+Simplicity - aim for the simplest solution that gets the job done whilst remaining => write simple code, do not put every thing in a function.
 
-Test Coverage - breaking changes should break your tests. => I want to use RSpec for testing
+Test Coverage - breaking changes should break your tests. => I want to use Minitest for testing.
 
 Performance - should gracefully handle a significant increase in amount of data provided (e.g 10000+ users). => Read json file line by line (f.each_line) is a good solution, if I can get enough time, I will do it, but it is not that important.
 
-Robustness - should handle and report errors. => Ruby exceptions handler
+Robustness - should handle and report errors => Ruby exceptions handler.
 
 ### The relationship between 3 json files
 
-a. Organization do not belong to any other files
+a. Organization do not belong to any other files.
 
-b. User belongs to Organizations
+b. User belongs to organizations.
 
-c. Tickets has submitter_id(user 1) and assignee_id(user 2), it also belongs to Organizations
+c. Tickets has submitter_id(user 1) and assignee_id(user 2), it also belongs to organizations.
 
 ### My plan before I start to code
 
-a. Create a function to let user to input a keyword to the CLI
+a. Create a function to let user to input a keyword to the CLI.
 
-b. ~~Create a function to read json file line by line and output each element to ruby object, if file is too big, stop at the middle of the reading processes and wait for the data digest~~ First step: read json file and change it to a big hash
+b. ~~Create a function to read json file line by line and output each element to ruby object, if file is too big, stop at the middle of the reading processes and wait for the data digest~~ First step: read json file and change it to a big hash.
 
-c. Create a function to match if a hash contain keywords & id (in an array)
+c. Create a function to match if a hash contain keywords & id (in an array).
 
-d. Create a function to match if a hash has empty value (need to input a template and base on this template to check)
+d. Create a function to match if a hash has empty value (need to input a template and base on this template to check).
 
-e. Create a function to first search Organization hash, then use the results to search Users hash, then use the results to search tickets hash, and store result to an array
+e. Create a function to first search Organization hash, then use the results to search Users hash, then use the results to search tickets hash, and store result to an array.
 
-f. Create a function to output the array to the screen
+f. Create a function to output the array to the screen.
 
 ### template
 
@@ -146,3 +147,17 @@ Tickets
   "via": string
 }
 ```
+### What I achieved
+a. A search function that include empty '' search.
+b. The search results shown in 3 tables.
+c. The data in table is ready for normal people to use (with out the country code part).
+d. Limited testing, I am not good at testing, but I want to learn it and I learned how to use minitest in this project.
+
+### What I need to do
+a. Find out the right country-code => country-name key-value hash that can be used in this system, I am not sure how many countries had been included in the data.
+
+b. Write more testing.
+
+c. Improving code performance by creating a function to read json file line by line and output each element to ruby object, if file is too big, stop at the middle of the reading processes and wait for the data digest.
+
+d. More practice on ruby, I was too focus on front-end technology in the last 6 month.
