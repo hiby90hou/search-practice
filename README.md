@@ -1,5 +1,39 @@
 # Search-practice
+
 ## A simple search function
+
+### The technology that I used in this project
+
+1. ruby -> a backend language
+
+2. terminal-table (gem) -> a gem to make good table layout in terminal
+
+3. minitest(gem) -> a ruby testing tool
+
+### How to use
+1. Install ruby
+
+
+2. Clone project
+```
+git clone https://github.com/hiby90hou/search-practice.git
+```
+
+3. Install gems
+```
+bundle install
+```
+
+4. Run ruby project
+```
+cd lib
+ruby ./search_cli.rb
+```
+
+5. Run testing
+```
+ruby ./search_cli_test.rb
+```
 
 ### Requirement analysis
 
@@ -35,7 +69,7 @@ b. User belongs to Organizations
 
 c. Tickets has submitter_id(user 1) and assignee_id(user 2), it also belongs to Organizations
 
-### My plan
+### My plan before I start to code
 
 a. Create a function to let user to input a keyword to the CLI
 
