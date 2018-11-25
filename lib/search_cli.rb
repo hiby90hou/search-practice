@@ -40,7 +40,6 @@ class SearchInterface
       user
     end
 
-    # puts users_search_results
     tickets_search_results = @tickets.find_keyword(keyword)
 
     # find organization name, submitter name, assignee name for ticket
@@ -89,6 +88,7 @@ class FormElement
   def initialize(file_address)
     @file_address = file_address
     @data_hash
+    @quick_search_id_element_hash = Hash.new
   end
 
   def get_hash_by_address
@@ -107,6 +107,11 @@ class FormElement
     @data_hash.each do |element|
       if find_value_in_nested_hash(element, keyword)
         results.push(element)
+      end
+
+      # store info in hash for quick search in next time
+      if element.key?(element['_id']) && element.key?(element['name']) && !@quick_search_id_element_hash.key?(element['_id']) 
+        @quick_search_id_element_hash[element['_id']] = element
       end
     end
 
@@ -161,10 +166,15 @@ class FormElement
 
   def find_element_by_id(input_id)
     result = ''
-    @data_hash.each do |element|
-      if element['_id'] == input_id
-        result = element
+    if @quick_search_id_element_hash.empty?
+      @data_hash.each do |element|
+        if element['_id'] == input_id
+          result = element
+        end
       end
+      
+    elsif !@quick_search_id_element_hash.empty?
+      result = @quick_search_id_element_hash[input_id]
     end
 
     return result
@@ -173,7 +183,6 @@ end
 
 class DisplayTable
   def show_organization_table(organizations)
-    # puts organizations
     table = Terminal::Table.new do |t|
       t << ['name','domain name','create at','details','shared tickets','tags']
       organizations.each do |organization|
@@ -190,7 +199,6 @@ class DisplayTable
   end
 
   def show_user_table(users)
-    # puts users
     table = Terminal::Table.new do |t|
       t << ['name','alias','create date','active','verified','shared','locale','email','phone','signature','organization','tags','suspended','role']
       users.each do |user|
@@ -210,7 +218,6 @@ class DisplayTable
   end
 
   def show_ticket_table(tickets)
-    # puts tickets
     table = Terminal::Table.new do |t|
       t << ['subject','created_at','type','description','priority','status','submitter name','assignee name','organization name','tags','has_incidents','due_at','via']
       tickets.each do |ticket|
@@ -269,7 +276,6 @@ while !close_interface
 
   keyword = gets.chomp
 
-  puts keyword
   interface.search(keyword)
   interface.show_result()
 
