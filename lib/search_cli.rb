@@ -260,7 +260,7 @@ class DisplayTable
   end
 end
 
-interface = SearchInterface.new('../resources/organizations.json','../resources/users.json','../resources/tickets.json')
+interface = SearchInterface.new('./resources/organizations.json','./resources/users.json','./resources/tickets.json')
 
 close_interface = false
 

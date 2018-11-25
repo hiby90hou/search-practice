@@ -27,13 +27,12 @@ bundle install
 
 d. Run ruby project
 ```
-cd lib
-ruby ./search_cli.rb
+ruby ./lib/search_cli.rb
 ```
 
 e. Run testing
 ```
-ruby ./search_cli_test.rb
+ruby ./lib/search_cli_test.rb
 ```
 
 ### Requirement analysis

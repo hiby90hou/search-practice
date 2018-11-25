@@ -1,10 +1,10 @@
 require 'minitest/spec'
 require 'minitest/autorun'
-require './search_cli.rb'
+require './lib/search_cli.rb'
 
 class SearchCliTest < MiniTest::Test
   def setup
-    @organizations = FormElement.new('../resources/organizations-test.json')
+    @organizations = FormElement.new('./resources/organizations-test.json')
     @hash = @organizations.get_hash_by_address
   end
 
